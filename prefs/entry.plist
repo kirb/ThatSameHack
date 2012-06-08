@@ -1,0 +1,10 @@
+{
+    entry = {
+	bundle = ThatSameHack;
+	cell = PSLinkCell;
+	detail = ThatSameHackListController;
+	icon = ThatSameHack.png;
+	isController = 1;
+	label = ThatSameHack;
+    };
+}
