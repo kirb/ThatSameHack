@@ -1,56 +1,70 @@
-#import <CoreFoundation/CFNotificationCenter.h>
+#import <SpringBoard/SpringBoard.h>
 
-#define prefpath @"/var/mobile/Library/Preferences/ws.hbang.thatsamehack.plist"
-static int rows=6;
-static int cols=6;
+NSUInteger rows = 6;
+NSUInteger columns = 6;
 
 %hook SBIconListView
-+(unsigned)iconRowsForInterfaceOrientation:(int)interfaceOrientation{return rows;}
-+(unsigned)maxVisibleIconRowsInterfaceOrientation:(int)orientation{return cols;}
-+(unsigned)iconColumnsForInterfaceOrientation:(int)interfaceOrientation{return cols;}
-//-(unsigned)iconRowsForCurrentOrientation{return rows;}
-//-(unsigned)iconColumnsForCurrentOrientation{return cols;}
+
++ (NSUInteger)iconRowsForInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
+	return rows;
+}
+
++ (NSUInteger)maxVisibleIconRowsInterfaceOrientation:(UIInterfaceOrientation)orientation {
+	return rows;
+}
+
++ (NSUInteger)iconColumnsForInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
+	return columns;
+}
+
 %end
-/*icons glitch up, so temporarily disabled
-%hook SBDockIconListView
-+(unsigned)iconColumnsForInterfaceOrientation:(int)interfaceOrientation{return cols;}
-+(unsigned)iconRowsForInterfaceOrientation:(int)interfaceOrientation{return rows;}
-%end*/
+
 %hook SBFolderIconListView
-+(unsigned)iconColumnsForInterfaceOrientation:(int)interfaceOrientation{return cols;}
-+(unsigned)iconRowsForInterfaceOrientation:(int)interfaceOrientation{return rows;}
+
++ (NSUInteger)iconColumnsForInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
+	return columns;
+}
+
++ (NSUInteger)iconRowsForInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
+	return rows;
+}
+
 %end
+
 %hook SBNewsstandIconListView
-+(unsigned)iconColumnsForInterfaceOrientation:(int)interfaceOrientation{return cols;}
-+(unsigned)iconRowsForInterfaceOrientation:(int)interfaceOrientation{return rows;}
+
++ (NSUInteger)iconColumnsForInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
+	return columns;
+}
+
++ (NSUInteger)iconRowsForInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
+	return rows;
+}
+
 %end
+
 %hook SBAppSwitcherBarView
-+(unsigned)iconsPerPage:(int)page{return rows;}
+
++ (NSUInteger)iconsPerPage:(NSInteger)page {
+	return columns;
+}
+
 %end
 
-static void ADTSHPrefsLoad(){
-    NSDictionary *prefs;
-    if([[NSFileManager defaultManager]fileExistsAtPath:prefpath]){
-        prefs=[[NSDictionary alloc]initWithContentsOfFile:prefpath];
-        if(!prefs) return;
-        rows=[[prefs objectForKey:@"Rows"]intValue];
-        if(!rows) rows=5;
-        cols=[[prefs objectForKey:@"Columns"]intValue];
-        if(!cols) cols=10;
-    }else{
-        prefs=[[NSDictionary alloc]initWithObjectsAndKeys:[NSNumber numberWithInt:6],@"Rows",[NSNumber numberWithInt:6],@"Columns",nil];
-        [prefs writeToFile:prefpath atomically:YES];
-    }
-    [prefs release];
+void ADTSHLoadPrefs() {
+	NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:@"/var/mobile/Library/Preferences/ws.hbang.thatsamehack.plist"];
+	rows = prefs[@"Rows"] ? ((NSNumber *)prefs[@"Rows"]).intValue : 5;
+	columns = prefs[@"Columns"] ? ((NSNumber *)prefs[@"Columns"]).intValue : 5;
 }
 
-static void ADTSHPrefsUpdate(CFNotificationCenterRef center,void *observer,CFStringRef name,const void *object,CFDictionaryRef userInfo){
-    ADTSHPrefsLoad();
+void ADTSHRespring() {
+	[(SpringBoard *)[UIApplication sharedApplication] _relaunchSpringBoardNow];
 }
-%ctor{
-    NSAutoreleasePool *p=[[NSAutoreleasePool alloc]init];
-    ADTSHPrefsLoad();
-    CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(),NULL,&ADTSHPrefsUpdate,CFSTR("ws.hbang.thatsamehack/ReloadPrefs"),NULL,0);
-    %init;
-    [p drain];
+
+%ctor {
+	@autoreleasepool {
+		ADTSHLoadPrefs();
+		CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, (CFNotificationCallback)ADTSHLoadPrefs, CFSTR("ws.hbang.thatsamehack/ReloadPrefs"), NULL, 0);
+		CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, (CFNotificationCallback)ADTSHRespring, CFSTR("ws.hbang.thatsamehack/Respring"), NULL, 0);
+	}
 }

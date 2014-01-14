@@ -11,14 +11,13 @@
 			<string>Icons</string>
 			<key>footerText</key>
 			<string>Please note that setting a lower amount of icons than what you already have may cause the layout to reset.
-If the layout doesn't take effect immediately, please respring.
-</string>
+If the layout doesn't take effect immediately, please respring.</string>
 		</dict>
 		<dict>
 			<key>cell</key>
 			<string>PSLinkListCell</string>
 			<key>default</key>
-			<string>6</string>
+			<string>5</string>
 			<key>defaults</key>
 			<string>ws.hbang.thatsamehack</string>
 			<key>label</key>
@@ -62,7 +61,7 @@ If the layout doesn't take effect immediately, please respring.
 			<key>cell</key>
 			<string>PSLinkListCell</string>
 			<key>default</key>
-			<string>6</string>
+			<string>5</string>
 			<key>defaults</key>
 			<string>ws.hbang.thatsamehack</string>
 			<key>label</key>
@@ -108,7 +107,7 @@ If the layout doesn't take effect immediately, please respring.
 		</dict>
 		<dict>
 			<key>action</key>
-			<string>tshrespring:</string>
+			<string>respring</string>
 			<key>cell</key>
 			<string>PSButtonCell</string>
 			<key>label</key>

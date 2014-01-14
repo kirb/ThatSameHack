@@ -1,7 +1,7 @@
 include theos/makefiles/common.mk
 
 BUNDLE_NAME = ThatSameHack
-ThatSameHack_FILES = ThatSameHack.mm
+ThatSameHack_FILES = ADTSHRootListController.m
 ThatSameHack_INSTALL_PATH = /Library/PreferenceBundles
 ThatSameHack_FRAMEWORKS = UIKit
 ThatSameHack_PRIVATE_FRAMEWORKS = Preferences
